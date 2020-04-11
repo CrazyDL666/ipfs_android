@@ -36,7 +36,7 @@ public class updata_adpter extends BaseAdapter {
 
 
     public interface OnWtglItemListener {
-        void OnWtglItemCliek(String down_url);
+        void OnWtglItemCliek(String down_url,String title,String verson_num);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class updata_adpter extends BaseAdapter {
         holder.kuai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClick.OnWtglItemCliek(updata_bean.getData().get(position).getApk_file());
+                onItemClick.OnWtglItemCliek(updata_bean.getData().get(position).getApk_file(),updata_bean.getData().get(position).getTitle(),updata_bean.getData().get(position).getVersion());
 
             }
         });
