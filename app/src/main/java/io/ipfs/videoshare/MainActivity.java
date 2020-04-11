@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private String json_all;
     public static MainActivity _main;
 
-    private String[] tabText = {"首页", "发现", "消息", "我的"};
+    private String[] tabText = {"", "", "", "设置"};
     //未选中icon
-    private int[] normalIcon = {R.drawable.youjiantou, R.drawable.youjiantou, R.drawable.youjiantou, R.drawable.youjiantou};
+    private int[] normalIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
     //选中时icon
-    private int[] selectIcon = {R.drawable.icon, R.drawable.icon, R.drawable.icon, R.drawable.icon};
+    private int[] selectIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
 
     private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
 

@@ -76,9 +76,11 @@ public class Updata_list extends Activity {
     private void list(updata_bean updata_bean) {
         updata_adpter = new updata_adpter(Updata_list.this, updata_bean, new updata_adpter.OnWtglItemListener() {
             @Override
-            public void OnWtglItemCliek(String down_url) {
+            public void OnWtglItemCliek(String down_url,String name,String verson) {
                 Intent intent = new Intent(Updata_list.this, erweima.class);
                 intent.putExtra("down_url", down_url);
+                intent.putExtra("name", name);
+                intent.putExtra("verson", verson);
                 startActivity(intent);
             }
         });
