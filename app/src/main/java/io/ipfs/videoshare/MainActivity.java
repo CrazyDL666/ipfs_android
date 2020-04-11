@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,12 +14,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.next.easynavigation.constant.Anim;
+import com.next.easynavigation.view.EasyNavigationBar;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.UpdateCallback;
 import com.vector.update_app.utils.ColorUtil;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,7 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.ipfs.videoshare.Updata.CProgressDialogUtils;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import io.ipfs.videoshare.Fragment.FirstFragment;
+import io.ipfs.videoshare.Fragment.ForeFragment;
+import io.ipfs.videoshare.Fragment.ThreeFragment;
+import io.ipfs.videoshare.Fragment.TwoFragment;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,53 +46,67 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     protected static int messageQueueIndexId = 0;
-    private String hash="bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
-    List<String> okurl=new ArrayList<>();
-    Button button,update;
-    public String head=App.updata_url_head;
-    public String urlurl=App.updata_url;
+    @InjectView(R.id.navigationBar)
+    EasyNavigationBar navigationBar;
+    private String hash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
+    List<String> okurl = new ArrayList<>();
+    Button button, update;
+    public String head = App.updata_url_head;
+    public String urlurl = App.updata_url;
     private String json_all;
     public static MainActivity _main;
+
+    private String[] tabText = {"首页", "发现", "消息", "我的"};
+    //未选中icon
+    private int[] normalIcon = {R.drawable.youjiantou, R.drawable.youjiantou, R.drawable.youjiantou, R.drawable.youjiantou};
+    //选中时icon
+    private int[] selectIcon = {R.drawable.icon, R.drawable.icon, R.drawable.icon, R.drawable.icon};
+
+    private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        _main=this;
+        ButterKnife.inject(this);
+        _main = this;
+
+
+        fragments.add(new FirstFragment());
+        fragments.add(new TwoFragment());
+        fragments.add(new ThreeFragment());
+        fragments.add(new ForeFragment());
+
+        navigationBar.titleItems(tabText)
+                .normalIconItems(normalIcon)
+                .selectIconItems(selectIcon)
+                .fragmentList(fragments)
+                .fragmentManager(getSupportFragmentManager())
+                .normalTextColor(Color.parseColor("#666666"))
+                .selectTextColor(Color.parseColor("#333333"))
+                .canScroll(true)
+                .anim(Anim.BounceIn)
+                .build();
 
         updata();
-        button=findViewById(R.id.button);
-        update=findViewById(R.id.update);
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(json_all==null){
-                    Intent intent = new Intent(MainActivity.this, Updata_list.class);
-                    intent.putExtra("json", "");
-                    startActivity(intent);
-                }else{
-                    Intent intent = new Intent(MainActivity.this, Updata_list.class);
-                    intent.putExtra("json", json_all);
-                    startActivity(intent);
-                }
-
-            }
-        });
+        button = findViewById(R.id.button);
+        update = findViewById(R.id.update);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this,okurl.size()+"",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, okurl.size() + "", Toast.LENGTH_SHORT).show();
             }
         });
 
         Gson gson = new Gson();
         String[] server_string = gson.fromJson(App.serverAdd, String[].class);
-        for(int i=0;i<server_string.length;i++){
-            getAsyn(server_string[i].replace(":hash",hash));
+        for (int i = 0; i < server_string.length; i++) {
+            getAsyn(server_string[i].replace(":hash", hash));
         }
 
     }
+
     public void getAsyn(String url) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
@@ -98,19 +119,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     String result = response.body().string().trim();
-                    Log.e("xxx",result.length()+"              "+response.request().url());
-                    if(result.length()==31){
-                        Log.e("----------------","");
-                        okurl.add(response.request().url().toString().replace(hash,":hash"));
-                    }else{
-                        Log.e("xxxxxxxxxxxxxxxxxx","");
+                    Log.e("xxx", result.length() + "              " + response.request().url());
+                    if (result.length() == 31) {
+                        Log.e("----------------", "");
+                        okurl.add(response.request().url().toString().replace(hash, ":hash"));
+                    } else {
+                        Log.e("xxxxxxxxxxxxxxxxxx", "");
                     }
                 }
             }
         });
     }
+
     private void updata() {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
@@ -154,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                      */
                     @Override
                     protected UpdateAppBean parseJson(String json) {
-                        json_all=json;
+                        App.updata_date = json;
                         UpdateAppBean updateAppBean = new UpdateAppBean();
                         try {
                             JSONObject jsonObject = new JSONObject(json);
@@ -163,19 +185,19 @@ public class MainActivity extends AppCompatActivity {
 
                             Gson gson = new Gson();
                             updata_bean upbean = gson.fromJson(json, updata_bean.class);
-                            int big=0;
-                            int postion=0;
+                            int big = 0;
+                            int postion = 0;
 
-                            for(int i=0;i<upbean.getData().size();i++){
-                                if(Integer.parseInt(upbean.getData().get(i).getBuild())>big){
-                                    big=Integer.parseInt(upbean.getData().get(i).getBuild());
-                                    postion=i;
+                            for (int i = 0; i < upbean.getData().size(); i++) {
+                                if (Integer.parseInt(upbean.getData().get(i).getBuild()) > big) {
+                                    big = Integer.parseInt(upbean.getData().get(i).getBuild());
+                                    postion = i;
                                 }
                             }
-                            if(big>getVersionCode(MainActivity.this)){
-                                updata="Yes";
-                            }else{
-                                updata="No";
+                            if (big > getVersionCode(MainActivity.this)) {
+                                updata = "Yes";
+                            } else {
+                                updata = "No";
                             }
 
                             updateAppBean
@@ -184,12 +206,12 @@ public class MainActivity extends AppCompatActivity {
                                     //（必须）新版本号，
                                     .setNewVersion(upbean.getData().get(postion).getVersion())
                                     //（必须）下载地址
-                                    .setApkFileUrl(head+upbean.getData().get(postion).getApk_file())
+                                    .setApkFileUrl(head + upbean.getData().get(postion).getApk_file())
                                     //（必须）更新内容
                                     .setUpdateLog(upbean.getData().get(postion).getLog());
-                                    //大小，不设置不显示大小，可以不设置
+                            //大小，不设置不显示大小，可以不设置
 //                                    .setTargetSize(jsonObject.optString("target_size"))
-                                    //是否强制更新，可以不设置
+                            //是否强制更新，可以不设置
 //                                    .setConstraint(constraint);
                             //设置md5，可以不设置
 //                                    .setNewMd5(jsonObject.optString("new_md51"));
@@ -211,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                      */
                     @Override
                     public void onBefore() {
-                        CProgressDialogUtils.showProgressDialog(MainActivity.this);
+                        //CProgressDialogUtils.showProgressDialog(MainActivity.this);
                     }
 
                     /**
@@ -219,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                      */
                     @Override
                     public void onAfter() {
-                        CProgressDialogUtils.cancelProgressDialog(MainActivity.this);
+                        //CProgressDialogUtils.cancelProgressDialog(MainActivity.this);
                     }
 
                     /**

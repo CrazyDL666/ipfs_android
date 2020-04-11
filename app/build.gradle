@@ -35,4 +35,5 @@ dependencies {
     implementation 'com.jakewharton:butterknife:5.1.1'
     implementation 'io.github.meetsl:SCardView:1.0'
     compile 'cn.yipianfengye.android:zxing-library:2.2'
+    implementation 'com.github.forvv231:EasyNavigation:1.0.3'
 }
