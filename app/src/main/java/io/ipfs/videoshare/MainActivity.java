@@ -7,11 +7,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
 import com.next.easynavigation.constant.Anim;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     //选中时icon
     private int[] selectIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
 
-    private List<android.support.v4.app.Fragment> fragments = new ArrayList<>();
+    private List<Fragment> fragments = new ArrayList<>();
 
 
     @Override
@@ -74,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         fragments.add(new FirstFragment());
-        fragments.add(new TwoFragment());
-        fragments.add(new ThreeFragment());
+        fragments.add(new FirstFragment());
+        fragments.add(new FirstFragment());
         fragments.add(new ForeFragment());
 
         navigationBar.titleItems(tabText)

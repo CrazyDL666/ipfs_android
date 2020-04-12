@@ -1,7 +1,8 @@
 package io.ipfs.videoshare.Updata;
 
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Progress;

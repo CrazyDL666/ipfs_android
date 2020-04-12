@@ -6,13 +6,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
 import com.vector.update_app.UpdateAppBean;
@@ -23,6 +24,7 @@ import com.vector.update_app.utils.ColorUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import io.ipfs.videoshare.Updata_list;
 import io.ipfs.videoshare.erweima;
 import io.ipfs.videoshare.updata_bean;
+import ipfs.gomobile.android.IPFS;
 
 /**
  * Created by Administrator on 2020/3/30.
@@ -63,6 +66,14 @@ public class ForeFragment extends Fragment {
         ButterKnife.inject(this, view);
 
 
+
+        try{
+            IPFS ipfs = new IPFS(getActivity());
+            ipfs.start();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         banben.setText(getVersionName(getContext()));
         click2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
