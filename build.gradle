@@ -3,22 +3,36 @@
 buildscript {
     
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        
+        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath group: 'org.yaml', name: 'snakeyaml', version: '1.25'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+task importManifest {
+    def ManifestFile = new File("${rootDir.getPath()}/packages/Manifest.yml")
+    def EnvVersion = System.env['GOMOBILE_IPFS_VERSION']
 
+    rootProject.ext {
+        manifest = new org.yaml.snakeyaml.Yaml().load(ManifestFile.newInputStream())
+        version = (EnvVersion != null) ? EnvVersion : '0.0.42-dev'
+    }
+}
 allprojects {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url "${rootDir.getPath()}/packages/build/android/maven" }
+
+        maven { url rootProject.ext.manifest.global.android.bintray_url }
     }
 }
 
