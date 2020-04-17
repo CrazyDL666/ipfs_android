@@ -35,6 +35,7 @@ import io.ipfs.videoshare.R;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import io.ipfs.videoshare.Updata_list;
 import io.ipfs.videoshare.erweima;
+import io.ipfs.videoshare.ipfs_util.StartIPFS;
 import io.ipfs.videoshare.updata_bean;
 import ipfs.gomobile.android.IPFS;
 
@@ -43,7 +44,7 @@ import ipfs.gomobile.android.IPFS;
  */
 
 public class ForeFragment extends Fragment {
-
+    private IPFS ipfs;
 
     @InjectView(R.id.click1)
     RelativeLayout click1;
@@ -53,8 +54,18 @@ public class ForeFragment extends Fragment {
     RelativeLayout click3;
     @InjectView(R.id.banben)
     TextView banben;
+    @InjectView(R.id.id)
+    TextView id;
     public String head = App.updata_url_head;
     public String urlurl = App.updata_url;
+
+    public void setIpfs(IPFS ipfs) {
+        this.ipfs = ipfs;
+    }
+    public void displayPeerIDResult(String peerID) {
+        id.setText("My ID:  "+peerID);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,14 +77,9 @@ public class ForeFragment extends Fragment {
         ButterKnife.inject(this, view);
 
 
+        new StartIPFS(this).execute();
 
-        try{
-            IPFS ipfs = new IPFS(getActivity());
-            ipfs.start();
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
         banben.setText(getVersionName(getContext()));
         click2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

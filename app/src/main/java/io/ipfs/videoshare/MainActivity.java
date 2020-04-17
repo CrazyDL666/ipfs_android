@@ -12,8 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+
 
 import com.google.gson.Gson;
 import com.next.easynavigation.constant.Anim;
@@ -32,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.ipfs.videoshare.Fragment.FirstFragment;

@@ -38,4 +38,5 @@ dependencies {
     implementation 'com.github.forvv231:EasyNavigation:1.0.3'
     implementation project(path: ':bridge')
     implementation project(path: ':bridge')
+    implementation 'androidx.appcompat:appcompat:1.1.0'
 }
