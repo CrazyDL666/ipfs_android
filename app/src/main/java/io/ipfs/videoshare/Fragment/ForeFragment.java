@@ -31,11 +31,13 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.ipfs.videoshare.App;
+import io.ipfs.videoshare.Loading;
 import io.ipfs.videoshare.R;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import io.ipfs.videoshare.Updata_list;
 import io.ipfs.videoshare.erweima;
 import io.ipfs.videoshare.ipfs_util.StartIPFS;
+import io.ipfs.videoshare.ipfs_util.Util;
 import io.ipfs.videoshare.updata_bean;
 import ipfs.gomobile.android.IPFS;
 
@@ -59,12 +61,6 @@ public class ForeFragment extends Fragment {
     public String head = App.updata_url_head;
     public String urlurl = App.updata_url;
 
-    public void setIpfs(IPFS ipfs) {
-        this.ipfs = ipfs;
-    }
-    public void displayPeerIDResult(String peerID) {
-        id.setText("My ID:  "+peerID);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +73,9 @@ public class ForeFragment extends Fragment {
         ButterKnife.inject(this, view);
 
 
-        new StartIPFS(this).execute();
+        //new StartIPFS(this).execute();
+
+        id.setText("My ID:  "+ Loading.util.get_id());
 
 
         banben.setText(getVersionName(getContext()));
@@ -130,8 +128,6 @@ public class ForeFragment extends Fragment {
                 }
             }
         });
-
-
         return view;
     }
 

@@ -38,7 +38,7 @@ public final class StartIPFS extends AsyncTask<Void, Void, String> {
             ipfs.start();
 
             ArrayList<JSONObject> jsonList = ipfs.newRequest("/id").sendToJSONList();
-            activity.setIpfs(ipfs);
+            //activity.setIpfs(ipfs);
             return jsonList.get(0).getString("ID");
         } catch (Exception err) {
             backgroundError = true;
@@ -56,7 +56,7 @@ public final class StartIPFS extends AsyncTask<Void, Void, String> {
             Log.e(TAG, "IPFS start error: " + result);
         } else {
             Log.i(TAG, "Your PeerID is: " + result);
-            activity.displayPeerIDResult(result);
+            //activity.displayPeerIDResult(result);
         }
     }
 }
