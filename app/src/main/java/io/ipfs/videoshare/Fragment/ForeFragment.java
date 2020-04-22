@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,8 @@ public class ForeFragment extends Fragment {
 
         id.setText("My ID:  "+ Loading.util.get_id());
 
-
+        Map netstat = Loading.util.get_netstat();
+        Log.e("netstat", netstat.toString());
         banben.setText(getVersionName(getContext()));
         click2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
