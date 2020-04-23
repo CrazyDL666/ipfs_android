@@ -1,6 +1,9 @@
 package io.ipfs.videoshare.ipfs_util;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -10,12 +13,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.ipfs.videoshare.App;
+import io.ipfs.videoshare.Bean.NamecacheBean;
 import ipfs.gomobile.android.IPFS;
 import ipfs.gomobile.android.RequestBuilder;
 
 public class Util implements _Ipfs {
     private IPFS ipfs;
-
+    private DatabaseHelper dbHelper;
     //初始化
     @Override
     public Boolean startipfs(final Activity activity) {
@@ -88,6 +93,57 @@ public class Util implements _Ipfs {
         }
 //        return jsonList.get(0).getString("ID");
         return null;
+    }
+
+    @Override
+    public String resolvecache(String ipns,Context context, String lable) throws IPFS.ShellRequestException, JSONException, RequestBuilder.RequestBuilderException {
+        dbHelper = new DatabaseHelper(context, "ipfs", null, 2);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        NamecacheBean cache = new NamecacheBean();
+        Cursor c = db.rawQuery("select * from ipnscache where ipns= ? limit 1", new String[] { ipns });
+        while (c.moveToNext()) {
+            cache.setIpfs(c.getString(0));
+        }
+        c.close();
+        if(cache.getIpfs() == null){
+            String ipfs = this.resolve(ipns);
+            db.execSQL("INSERT INTO ipnscache(ipns, ipfs, cachetime, app) values(?,?,?,?)",
+                    new String[]{ipns,ipfs,now, lable});
+            return ipfs;
+        }else {
+            if (now - cache.getCachetime() > 3600){
+//                TODO 异步获取ipns
+                return cache.getIpfs();
+            }else {
+                return cache.getIpfs();
+            }
+        }
+
+
+
+
+
+
+        return null;
+    }
+
+    @Override
+    public String resolve(String ipns) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException {
+        ArrayList<JSONObject> jsonList = ipfs.newRequest("/name/resolve").withArgument(ipns).sendToJSONList();
+        return jsonList.toString();
+    }
+
+    @Override
+    public String get_json(String ipfspath) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException {
+        ArrayList<JSONObject> jsonList = null;
+        jsonList = ipfs.newRequest("/cat").withArgument(ipfspath).sendToJSONList();
+        return jsonList.toString();
+    }
+
+    @Override
+    public String get_updatejson(Context context) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException {
+        String hash = this.resolvecache(App.updata_hash,context, "APK");
+        return this.get_json("/"+hash+'/'+"update.json");
     }
 
 
