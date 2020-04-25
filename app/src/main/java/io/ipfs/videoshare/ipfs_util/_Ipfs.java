@@ -21,7 +21,7 @@ public interface _Ipfs {
     Boolean startipfs(Activity activity, String url);
     String get_id();
     Map get_netstat();
-    String resolvecache(String ipns, Context context, String lable) throws IPFS.ShellRequestException, JSONException, RequestBuilder.RequestBuilderException;
+    String resolvecache(String ipns, Context context, String lable, String ipfsgw) throws IPFS.ShellRequestException, JSONException, RequestBuilder.RequestBuilderException;
     String resolve(String ipns) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException;
     String get_json(String ipfspath) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException;
 
