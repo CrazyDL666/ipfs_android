@@ -37,6 +37,6 @@ dependencies {
     implementation 'cn.yipianfengye.android:zxing-library:2.2'
     implementation 'com.github.forvv231:EasyNavigation:1.0.3'
     implementation project(path: ':bridge')
-    implementation project(path: ':bridge')
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'fm.jiecao:jiecaovideoplayer:5.5.2'
 }
