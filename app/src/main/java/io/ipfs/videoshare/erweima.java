@@ -9,13 +9,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -27,6 +28,7 @@ import java.io.InputStream;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import ipfs.gomobile.android.IPFS;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;

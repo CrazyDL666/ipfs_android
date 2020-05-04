@@ -6,13 +6,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
 import com.vector.update_app.UpdateAppBean;
@@ -23,6 +24,7 @@ import com.vector.update_app.utils.ColorUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,14 +35,16 @@ import io.ipfs.videoshare.R;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import io.ipfs.videoshare.Updata_list;
 import io.ipfs.videoshare.erweima;
+import io.ipfs.videoshare.ipfs_util.StartIPFS;
 import io.ipfs.videoshare.updata_bean;
+import ipfs.gomobile.android.IPFS;
 
 /**
  * Created by Administrator on 2020/3/30.
  */
 
 public class ForeFragment extends Fragment {
-
+    private IPFS ipfs;
 
     @InjectView(R.id.click1)
     RelativeLayout click1;
@@ -50,8 +54,18 @@ public class ForeFragment extends Fragment {
     RelativeLayout click3;
     @InjectView(R.id.banben)
     TextView banben;
+    @InjectView(R.id.id)
+    TextView id;
     public String head = App.updata_url_head;
     public String urlurl = App.updata_url;
+
+    public void setIpfs(IPFS ipfs) {
+        this.ipfs = ipfs;
+    }
+    public void displayPeerIDResult(String peerID) {
+        id.setText("My ID:  "+peerID);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +75,9 @@ public class ForeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment4, null);
         ButterKnife.inject(this, view);
+
+
+        new StartIPFS(this).execute();
 
 
         banben.setText(getVersionName(getContext()));
