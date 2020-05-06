@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
         String[] server_string = gson.fromJson(App.serverAdd, String[].class);
-        for (int i = 0; i < server_string.length; i++) {
-            getAsyn(server_string[i].replace(":hash", hash));
-        }
+//        for (int i = 0; i < server_string.length; i++) {
+//            getAsyn(server_string[i].replace(":hash", hash));
+//        }
 
     }
 

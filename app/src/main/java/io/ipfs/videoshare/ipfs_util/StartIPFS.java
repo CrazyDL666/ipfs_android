@@ -39,6 +39,8 @@ public final class StartIPFS extends AsyncTask<Void, Void, String> {
 
             ArrayList<JSONObject> jsonList = ipfs.newRequest("/id").sendToJSONList();
             activity.setIpfs(ipfs);
+            Log.i("AgentVersion", jsonList.get(0).getString("AgentVersion"));
+            Log.i("ProtocolVersion", jsonList.get(0).getString("ProtocolVersion"));
             return jsonList.get(0).getString("ID");
         } catch (Exception err) {
             backgroundError = true;

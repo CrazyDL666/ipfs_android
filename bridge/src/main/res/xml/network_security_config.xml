@@ -3,5 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">127.0.0.1</domain>
         <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">ipfs-gateway.dlimba.top</domain>
+        <domain includeSubdomains="false">ipfs.cloud.dlimba.top</domain>
     </domain-config>
 </network-security-config>
