@@ -6,7 +6,6 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import io.ipfs.videoshare.Fragment.ForeFragment;
@@ -37,26 +36,13 @@ public final class StartIPFS extends AsyncTask<Void, Void, String> {
         try {
             IPFS ipfs = new IPFS(activity.getContext());
             ipfs.start();
-           // Log.e("getRepoPath",ipfs.getRepoPath());
+
             ArrayList<JSONObject> jsonList = ipfs.newRequest("/id").sendToJSONList();
-
-           // ArrayList<JSONObject> jsonList2 = ipfs.newRequest("/swarm/peers").sendToJSONList();
-
-
-
-            byte[] infoRaw = ipfs.newRequest("add")
-                    .withBody("123")
-                    .send();
-            JSONObject infoJSON = new JSONObject(new String(infoRaw));
-            Log.e("xxxx",infoJSON.toString());
-
-
-
             activity.setIpfs(ipfs);
-           // Log.e("xxxxxx",jsonList2.toString()+"///"+jsonList2.);
+            Log.i("AgentVersion", jsonList.get(0).getString("AgentVersion"));
+            Log.i("ProtocolVersion", jsonList.get(0).getString("ProtocolVersion"));
             return jsonList.get(0).getString("ID");
         } catch (Exception err) {
-            err.printStackTrace();
             backgroundError = true;
             return "false";
         }
