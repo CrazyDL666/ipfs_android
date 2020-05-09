@@ -33,11 +33,14 @@ public class Updata_list extends Activity {
         setContentView(R.layout.updata_list);
         ButterKnife.inject(this);
         json = getIntent().getStringExtra("json");
+        String downurl=App.default_getway;
+        downurl=downurl.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
+        downurl=downurl="/update.json";
         if (json.equals("")) {
             if (MainActivity._main != null) {
-                getAsyn(App.updata_url);
+                getAsyn(downurl);
             } else {
-                getAsyn(App.updata_url);
+                getAsyn(downurl);
             }
         } else {
             Gson gson = new Gson();

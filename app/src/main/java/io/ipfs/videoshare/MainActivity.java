@@ -54,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private String hash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
     List<String> okurl = new ArrayList<>();
     Button button, update;
-    public String head = App.updata_url_head;
-    public String urlurl = App.updata_url;
-    private String json_all;
     public static MainActivity _main;
 
     private String[] tabText = {"", "", "", "设置"};
@@ -208,14 +205,15 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 updata = "No";
                             }
-
+                            String downurl=App.default_getway;
+                            downurl=downurl.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
                             updateAppBean
                                     //（必须）是否更新Yes,No
                                     .setUpdate(updata)
                                     //（必须）新版本号，
                                     .setNewVersion(upbean.getData().get(postion).getVersion())
                                     //（必须）下载地址
-                                    .setApkFileUrl(head + upbean.getData().get(postion).getApk_file())
+                                    .setApkFileUrl(downurl +"/"+ upbean.getData().get(postion).getApk_file())
                                     //（必须）更新内容
                                     .setUpdateLog(upbean.getData().get(postion).getLog());
                             //大小，不设置不显示大小，可以不设置

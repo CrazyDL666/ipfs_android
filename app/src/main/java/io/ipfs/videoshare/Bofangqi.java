@@ -35,7 +35,9 @@ public class Bofangqi extends AppCompatActivity {
         setContentView(R.layout.bofangqi);
         jzvdStd = (JCVideoPlayerStandard) findViewById(R.id.videoplayer);
         list=findViewById(R.id.list);
-        getAsyn(App.head+"/ipfs/QmPh5RHFtxrKBx7b8YDr3y72cycjmhFtHiryafz7jeeEws/files.json");
+
+        String getway=App.default_getway.replace("/ipfs/:hash","/ipfs/"+"QmeQ8tR97vuZ4n5Yj24kPJ2NZQma93tjd1xxTDndBwsPjD/files.json");
+        getAsyn(getway);
 
 
 
@@ -62,7 +64,8 @@ public class Bofangqi extends AppCompatActivity {
                             adpter = new video_adpter(Bofangqi.this, bean, new video_adpter.OnWtglItemListener() {
                                 @Override
                                 public void OnWtglItemCliek(String down_url,String title) {
-                                    jzvdStd.setUp(App.head+down_url, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, title);
+                                    String getway=App.default_getway.replace("/ipfs/:hash",down_url);
+                                    jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, title);
                                 }
                             });
                             list.setAdapter(adpter);
