@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 .anim(Anim.BounceIn)
                 .build();
 
-        updata();
+        updata(App.default_getway,App.updata_hash);
         button = findViewById(R.id.button);
         update = findViewById(R.id.update);
         button.setOnClickListener(new View.OnClickListener() {
@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
         String[] server_string = gson.fromJson(App.serverAdd, String[].class);
-        for (int i = 0; i < server_string.length; i++) {
-            getAsyn(server_string[i].replace(":hash", hash));
-        }
+//        for (int i = 0; i < server_string.length; i++) {
+//            getAsyn(server_string[i].replace(":hash", hash));
+//        }
 
     }
 
@@ -136,9 +136,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updata() {
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+    private void updata(String getway,String hash) {
+        if(getway.indexOf("/ipfs/:hash") == -1)
+        {
+            getway=App.default_getway;
+        }
+        getway=getway.replace("/ipfs/:hash","/ipns/"+hash);
+        getway=getway+"/update.json";
 
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
         Map<String, String> params = new HashMap<String, String>();
         new UpdateAppManager
                 .Builder()
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 //必须设置，实现httpManager接口的对象
                 .setHttpManager(new OkGoUpdateHttpUtil())
                 //必须设置，更新地址
-                .setUpdateUrl(urlurl)
+                .setUpdateUrl(getway)
                 //以下设置，都是可选
                 //设置请求方式，默认get
                 .setPost(false)
