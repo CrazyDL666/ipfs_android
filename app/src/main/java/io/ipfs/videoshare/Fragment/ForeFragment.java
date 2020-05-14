@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -101,7 +102,7 @@ public class ForeFragment extends Fragment {
         click2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updata();
+                updata(App.default_getway,App.updata_hash);
             }
         });
 
@@ -150,7 +151,16 @@ public class ForeFragment extends Fragment {
         }
         return "";
     }
-    private void updata() {
+    private void updata(String getway,String hash) {
+
+        if(getway.indexOf("/ipfs/:hash") == -1)
+        {
+            getway=App.default_getway;
+        }
+        getway=getway.replace("/ipfs/:hash","/ipns/"+hash);
+        getway=getway+"/update.json";
+
+
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
         Map<String, String> params = new HashMap<String, String>();
@@ -161,7 +171,7 @@ public class ForeFragment extends Fragment {
                 //必须设置，实现httpManager接口的对象
                 .setHttpManager(new OkGoUpdateHttpUtil())
                 //必须设置，更新地址
-                .setUpdateUrl(urlurl)
+                .setUpdateUrl(getway)
                 //以下设置，都是可选
                 //设置请求方式，默认get
                 .setPost(false)
@@ -215,6 +225,7 @@ public class ForeFragment extends Fragment {
                                 updata = "Yes";
                             } else {
                                 updata = "No";
+                                Toast.makeText(getActivity(),"已是最新版本",Toast.LENGTH_SHORT).show();
                             }
 
                             updateAppBean
@@ -250,7 +261,7 @@ public class ForeFragment extends Fragment {
                      */
                     @Override
                     public void onBefore() {
-                        //CProgressDialogUtils.showProgressDialog(MainActivity.this);
+                        Toast.makeText(getActivity(),"正在检测更新",Toast.LENGTH_SHORT).show();
                     }
 
                     /**
