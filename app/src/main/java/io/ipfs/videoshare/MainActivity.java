@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
     Button button, update;
     public static MainActivity _main;
 
-    private String[] tabText = {"", "", "", "设置"};
+    private String[] tabText = {"节点", "", "", "设置"};
     //未选中icon
-    private int[] normalIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
+    private int[] normalIcon = {R.drawable.jiedian, R.drawable.white, R.drawable.white, R.drawable.shezhi};
     //选中时icon
-    private int[] selectIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
+    private int[] selectIcon = {R.drawable.jiedian, R.drawable.white, R.drawable.white, R.drawable.shezhi};
 
     private List<Fragment> fragments = new ArrayList<>();
 
@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         fragments.add(new FirstFragment());
-        fragments.add(new FirstFragment());
-        fragments.add(new FirstFragment());
+        fragments.add(new TwoFragment());
+        fragments.add(new ThreeFragment());
         fragments.add(new ForeFragment());
 
         navigationBar.titleItems(tabText)

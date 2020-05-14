@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -28,18 +29,22 @@ public class Bofangqi extends AppCompatActivity {
     JCVideoPlayerStandard jzvdStd;
     ListView list;
     video_adpter adpter;
+    private String hash;
+    private ReadMoreTextView text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bofangqi);
         jzvdStd = (JCVideoPlayerStandard) findViewById(R.id.videoplayer);
+        text=findViewById(R.id.text);
         list=findViewById(R.id.list);
 
-        String getway=App.default_getway.replace("/ipfs/:hash","/ipfs/"+"QmeQ8tR97vuZ4n5Yj24kPJ2NZQma93tjd1xxTDndBwsPjD/files.json");
+
+        hash = getIntent().getStringExtra("url");
+
+        String getway=App.default_getway.replace("/ipfs/:hash",hash+"/files.json");
         getAsyn(getway);
-
-
 
     }
     public void getAsyn(String url) {
@@ -61,6 +66,11 @@ public class Bofangqi extends AppCompatActivity {
                         public void run() {
                             Gson gson=new Gson();
                             VideoBean bean = gson.fromJson(result, VideoBean.class);
+                            text.setText(bean.getDescription());
+                            if(bean.getFiles().size()>0){
+                                String getway=App.default_getway.replace("/ipfs/:hash",bean.getFiles().get(0).getUrl());
+                                jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, bean.getFiles().get(0).getTitle());
+                            }
                             adpter = new video_adpter(Bofangqi.this, bean, new video_adpter.OnWtglItemListener() {
                                 @Override
                                 public void OnWtglItemCliek(String down_url,String title) {

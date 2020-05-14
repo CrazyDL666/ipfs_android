@@ -5,18 +5,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:gravity="center">
+        android:layout_height="55dp">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/back"
+            android:padding="10dp"
+            android:layout_centerVertical="true"
+            >
+        </ImageView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="用户节点"
+            android:text="电影分类"
             android:textColor="#000"
-            android:textSize="17dp"></TextView>
-    </LinearLayout>
+            android:textSize="17dp"
+            android:layout_centerInParent="true"></TextView>
+    </RelativeLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"

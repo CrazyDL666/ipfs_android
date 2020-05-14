@@ -22,12 +22,17 @@
         </activity>
         <activity android:name="io.ipfs.videoshare.Updata_list"></activity>
         <activity android:name="io.ipfs.videoshare.erweima"></activity>
+        <activity android:name=".one.Type_list"></activity>
+        <activity android:name=".one.Video_list"></activity>
 
         <activity
             android:name=".Bofangqi"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" /> <!-- or android:screenOrientation="landscape"-->
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:value="GlideModule" />
 
     </application>
 
