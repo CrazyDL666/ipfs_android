@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,13 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.ipfs.videoshare.App;
+import io.ipfs.videoshare.Loading;
 import io.ipfs.videoshare.R;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import io.ipfs.videoshare.Updata_list;
 import io.ipfs.videoshare.erweima;
 import io.ipfs.videoshare.ipfs_util.StartIPFS;
+import io.ipfs.videoshare.ipfs_util.Util;
 import io.ipfs.videoshare.updata_bean;
 import ipfs.gomobile.android.IPFS;
 
@@ -59,12 +62,6 @@ public class ForeFragment extends Fragment {
     TextView id;
 
 
-    public void setIpfs(IPFS ipfs) {
-        this.ipfs = ipfs;
-    }
-    public void displayPeerIDResult(String peerID) {
-        id.setText("My ID:  "+peerID);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,9 +74,12 @@ public class ForeFragment extends Fragment {
         ButterKnife.inject(this, view);
 
 
-        new StartIPFS(this).execute();
+        //new StartIPFS(this).execute();
 
+        id.setText("My ID:  "+ Loading.util.get_id());
 
+        Map netstat = Loading.util.get_netstat();
+        Log.e("netstat", netstat.toString());
         banben.setText(getVersionName(getContext()));
         click2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -130,8 +130,6 @@ public class ForeFragment extends Fragment {
                 }
             }
         });
-
-
         return view;
     }
 
