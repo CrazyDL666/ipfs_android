@@ -34,7 +34,8 @@ public class Loading extends AppCompatActivity {
                             edit.putBoolean("isExist",false);
                             edit.commit();
                         }else{
-                            Toast.makeText(Loading.this, sharedPreferences.getString("name","不存在"), Toast.LENGTH_SHORT).show();
+
+                            //Toast.makeText(Loading.this, sharedPreferences.getString("name","不存在"), Toast.LENGTH_SHORT).show();
                         }
                     }
             }

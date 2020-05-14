@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import io.ipfs.videoshare.App;
 import io.ipfs.videoshare.Bean.NamecacheBean;
@@ -40,8 +41,6 @@ public class Util implements _Ipfs {
             e.printStackTrace();
         } catch (IPFS.SockManagerException e) {
             e.printStackTrace();
-        } catch (IPFS.RepoOpenException e) {
-            e.printStackTrace();
         } catch (IPFS.NodeStartException e) {
             e.printStackTrace();
         }
@@ -57,6 +56,11 @@ public class Util implements _Ipfs {
     @Override
     public String get_id() {
         if(!ipfs.isStarted())return null;
+
+//        String aa = this.resolve_by_gateway("QmXidpbD1osmHXWN4gJc3NHry3kzTnicnp9Utrpxk6s4Du", App.default_getway);
+//        String bb="";
+//        Log.e("aaa",aa);
+
         try {
             ArrayList<JSONObject> jsonList = ipfs.newRequest("/id").sendToJSONList();
             return jsonList.get(0).getString("ID");
@@ -101,69 +105,64 @@ public class Util implements _Ipfs {
         return null;
     }
 
-    @Override
-    public String resolvecache(String ipns,Context context, String lable, String ipfsgw) throws IPFS.ShellRequestException, JSONException, RequestBuilder.RequestBuilderException {
-        String ipfs ;
-        dbHelper = new DatabaseHelper(context, "ipfs", null, 2);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        NamecacheBean cache = new NamecacheBean();
-        Cursor c = db.rawQuery("select ipns,ipfs,cachetime,app from ipnscache where ipns= ? limit 1", new String[] { ipns });
-        while (c.moveToNext()) {
-            cache.setIpns(c.getString(0));
-            cache.setIpfs(c.getString(1));
-            cache.setCachetime(c.getString(2));
-            cache.setApp(c.getString(3));
-        }
-        c.close();
-        if(cache.getIpfs() == null){
-//            TODO 启异步线程获取ipfs值，只要一个最快的就可以了。
-            ipfs = this.resolve(ipns);
-            ipfs = getAsyn(ipfsgw.replace("ipfs/:hash", "ipns/"+ipns));
-
-            db.execSQL("INSERT INTO ipnscache(ipns, ipfs, cachetime, app) values(?,?,?,?)",
-                    new String[]{ipns,ipfs,now, lable});
-
-            return ipfs;
-        }else {
-            if (now - cache.getCachetime() > 3600){
-//                TODO 异步获取ipns
-                ipfs = this.resolve(ipns);
-                db.execSQL("INSERT INTO ipnscache(ipns, ipfs, cachetime, app) values(?,?,?,?)",
-                        new String[]{ipns,ipfs,now, lable});
-
-
-                return cache.getIpfs();
-            }else {
-                return cache.getIpfs();
-            }
-        }
-
-
-
-
-
-
-        return null;
-    }
-    public String getAsyn(String url) {
-        OkHttpClient client = new OkHttpClient();
-        final Request request = new Request.Builder().url(url).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //...
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String result = response.header("X-Ipfs-Pat");
-                    return result;
-                }
-            }
-        });
-    }
+//    @Override
+//    public String resolvecache(String ipns,Context context, String lable, String ipfsgw) throws IPFS.ShellRequestException, JSONException, RequestBuilder.RequestBuilderException {
+//        String ipfs ;
+//        dbHelper = new DatabaseHelper(context, "ipfs", null, 2);
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        NamecacheBean cache = new NamecacheBean();
+//        Cursor c = db.rawQuery("select ipns,ipfs,cachetime,app from ipnscache where ipns= ? limit 1", new String[] { ipns });
+//        while (c.moveToNext()) {
+//            cache.setIpns(c.getString(0));
+//            cache.setIpfs(c.getString(1));
+//            cache.setCachetime(c.getString(2));
+//            cache.setApp(c.getString(3));
+//        }
+//        c.close();
+//        if(cache.getIpfs() == null){
+////            TODO 启异步线程获取ipfs值，只要一个最快的就可以了。
+//            ipfs = this.resolve(ipns);
+//            ipfs = getAsyn(ipfsgw.replace("ipfs/:hash", "ipns/"+ipns));
+//
+//            db.execSQL("INSERT INTO ipnscache(ipns, ipfs, cachetime, app) values(?,?,?,?)",
+//                    new String[]{ipns,ipfs,now, lable});
+//
+//            return ipfs;
+//        }else {
+//            if (now - cache.getCachetime() > 3600){
+////                TODO 异步获取ipns
+//                ipfs = this.resolve(ipns);
+//                db.execSQL("INSERT INTO ipnscache(ipns, ipfs, cachetime, app) values(?,?,?,?)",
+//                        new String[]{ipns,ipfs,now, lable});
+//
+//
+//                return cache.getIpfs();
+//            }else {
+//                return cache.getIpfs();
+//            }
+//        }
+//
+//        return null;
+//    }
+//    public String getAsyn(String url) {
+//        OkHttpClient client = new OkHttpClient();
+//        final Request request = new Request.Builder().url(url).build();
+//        Call call = client.newCall(request);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                //...
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                if (response.isSuccessful()) {
+//                    String result = response.header("X-Ipfs-Pat");
+//                    return result;
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public String resolve(String ipns) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException {
@@ -178,11 +177,41 @@ public class Util implements _Ipfs {
         return jsonList.toString();
     }
 
-    @Override
-    public String get_updatejson(Context context) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException {
-        String hash = this.resolvecache(App.updata_hash,context, "APK",App.ipfsgw);
-        return this.get_json("/"+hash+'/'+"update.json");
+//    @Override
+//    public String get_updatejson(Context context) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException {
+//        String hash = this.resolvecache(App.updata_hash,context, "APK",App.ipfsgw);
+//        return this.get_json("/"+hash+'/'+"update.json");
+//    }
+    private String result;
+    public String resolve_by_gateway(String ipns, String gateway){
+        final CountDownLatch latch =  new CountDownLatch(1);
+        OkHttpClient client = new OkHttpClient();
+        String url = gateway.replace("/ipfs/:hash","/ipns/"+ipns);;
+        final Request request = new Request.Builder().url(url).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("err","a");
+                latch.countDown();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    result = response.header("X-Ipfs-Path");
+                    if(result.substring(result.length()-1,result.length()).equals("/")){
+                        result = result.substring(0,result.length()-1);
+                    }
+                    Log.e("ok",result);
+                    latch.countDown();
+                }
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
-
-
 }
