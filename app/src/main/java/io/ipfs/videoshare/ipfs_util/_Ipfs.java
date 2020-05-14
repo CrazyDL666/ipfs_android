@@ -27,4 +27,5 @@ public interface _Ipfs {
 
 //    String get_updatejson(Context context) throws IPFS.ShellRequestException, RequestBuilder.RequestBuilderException, JSONException;
     public String resolve_by_gateway(String ipns, String gateway);
+    public String get_content_by_gateway(String ipfspath, String gateway);
 }

@@ -57,10 +57,6 @@ public class Util implements _Ipfs {
     public String get_id() {
         if(!ipfs.isStarted())return null;
 
-//        String aa = this.resolve_by_gateway("QmXidpbD1osmHXWN4gJc3NHry3kzTnicnp9Utrpxk6s4Du", App.default_getway);
-//        String bb="";
-//        Log.e("aaa",aa);
-
         try {
             ArrayList<JSONObject> jsonList = ipfs.newRequest("/id").sendToJSONList();
             return jsonList.get(0).getString("ID");
@@ -192,7 +188,6 @@ public class Util implements _Ipfs {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("err","a");
                 latch.countDown();
             }
             @Override
@@ -202,7 +197,32 @@ public class Util implements _Ipfs {
                     if(result.substring(result.length()-1,result.length()).equals("/")){
                         result = result.substring(0,result.length()-1);
                     }
-                    Log.e("ok",result);
+                    latch.countDown();
+                }
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public String get_content_by_gateway(String ipfspath, String gateway){
+        final CountDownLatch latch =  new CountDownLatch(1);
+        OkHttpClient client = new OkHttpClient();
+        String url = gateway.replace("/ipfs/:hash",ipfspath);;
+        final Request request = new Request.Builder().url(url).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                latch.countDown();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    result = response.body().string();
                     latch.countDown();
                 }
             }
