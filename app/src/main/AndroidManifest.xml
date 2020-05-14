@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.ipfs.videoshare">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,6 +22,18 @@
         </activity>
         <activity android:name="io.ipfs.videoshare.Updata_list"></activity>
         <activity android:name="io.ipfs.videoshare.erweima"></activity>
+        <activity android:name=".one.Type_list"></activity>
+        <activity android:name=".one.Video_list"></activity>
+
+        <activity
+            android:name=".Bofangqi"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" /> <!-- or android:screenOrientation="landscape"-->
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:value="GlideModule" />
+
     </application>
 
 </manifest>

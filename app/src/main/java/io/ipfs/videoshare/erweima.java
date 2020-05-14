@@ -80,8 +80,9 @@ public class erweima extends Activity {
             verson2.setText(verson);
             title.setText(name);
         }
-
-        aa= MainActivity._main.head+down_url;
+        String getway=App.default_getway;
+        getway=getway.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
+        aa= getway+"/"+down_url;
         Bitmap mBitmap = CodeUtils.createImage(aa, 400, 400, null);
         image.setImageBitmap(mBitmap);
 

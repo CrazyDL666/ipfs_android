@@ -57,8 +57,7 @@ public class ForeFragment extends Fragment {
     TextView banben;
     @InjectView(R.id.id)
     TextView id;
-    public String head = App.updata_url_head;
-    public String urlurl = App.updata_url;
+
 
     public void setIpfs(IPFS ipfs) {
         this.ipfs = ipfs;
@@ -229,14 +228,15 @@ public class ForeFragment extends Fragment {
                                 updata = "No";
                                 Toast.makeText(getActivity(),"已是最新版本",Toast.LENGTH_SHORT).show();
                             }
-
+                            String downurl=App.default_getway;
+                            downurl=downurl.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
                             updateAppBean
                                     //（必须）是否更新Yes,No
                                     .setUpdate(updata)
                                     //（必须）新版本号，
                                     .setNewVersion(upbean.getData().get(postion).getVersion())
                                     //（必须）下载地址
-                                    .setApkFileUrl(head + upbean.getData().get(postion).getApk_file())
+                                    .setApkFileUrl(downurl +"/"+ upbean.getData().get(postion).getApk_file())
                                     //（必须）更新内容
                                     .setUpdateLog(upbean.getData().get(postion).getLog());
                             //大小，不设置不显示大小，可以不设置
