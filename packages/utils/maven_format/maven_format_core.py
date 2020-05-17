@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 import pystache
@@ -18,7 +18,7 @@ try:
 
     target_sdk = manifest["global"]["android"]["target_sdk_version"]
     artifact_id = manifest["go_core"]["android"]["artifact_id"]
-    group_id = manifest["global"]["android"]["group_id"]
+    group_id = manifest["global"]["group_id"]
     packaging = manifest["global"]["android"]["packaging"]
     core_name = manifest["go_core"]["android"]["name"]
     description = manifest["go_core"]["android"]["description"]
