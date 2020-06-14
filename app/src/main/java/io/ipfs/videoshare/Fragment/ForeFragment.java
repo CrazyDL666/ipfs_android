@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,13 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.ipfs.videoshare.App;
+import io.ipfs.videoshare.Loading;
 import io.ipfs.videoshare.R;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
 import io.ipfs.videoshare.Updata_list;
 import io.ipfs.videoshare.erweima;
 import io.ipfs.videoshare.ipfs_util.StartIPFS;
+import io.ipfs.videoshare.ipfs_util.Util;
 import io.ipfs.videoshare.updata_bean;
 import ipfs.gomobile.android.IPFS;
 
@@ -57,15 +60,8 @@ public class ForeFragment extends Fragment {
     TextView banben;
     @InjectView(R.id.id)
     TextView id;
-    public String head = App.updata_url_head;
-    public String urlurl = App.updata_url;
 
-    public void setIpfs(IPFS ipfs) {
-        this.ipfs = ipfs;
-    }
-    public void displayPeerIDResult(String peerID) {
-        id.setText("My ID:  "+peerID);
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,9 +74,12 @@ public class ForeFragment extends Fragment {
         ButterKnife.inject(this, view);
 
 
-        new StartIPFS(this).execute();
+        //new StartIPFS(this).execute();
 
+        id.setText("My ID:  "+ Loading.util.get_id());
 
+        Map netstat = Loading.util.get_netstat();
+        Log.e("netstat", netstat.toString());
         banben.setText(getVersionName(getContext()));
         click2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -131,8 +130,6 @@ public class ForeFragment extends Fragment {
                 }
             }
         });
-
-
         return view;
     }
 
@@ -229,14 +226,15 @@ public class ForeFragment extends Fragment {
                                 updata = "No";
                                 Toast.makeText(getActivity(),"已是最新版本",Toast.LENGTH_SHORT).show();
                             }
-
+                            String downurl=App.default_getway;
+                            downurl=downurl.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
                             updateAppBean
                                     //（必须）是否更新Yes,No
                                     .setUpdate(updata)
                                     //（必须）新版本号，
                                     .setNewVersion(upbean.getData().get(postion).getVersion())
                                     //（必须）下载地址
-                                    .setApkFileUrl(head + upbean.getData().get(postion).getApk_file())
+                                    .setApkFileUrl(downurl +"/"+ upbean.getData().get(postion).getApk_file())
                                     //（必须）更新内容
                                     .setUpdateLog(upbean.getData().get(postion).getLog());
                             //大小，不设置不显示大小，可以不设置

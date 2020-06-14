@@ -40,6 +40,9 @@ import io.ipfs.videoshare.Fragment.ForeFragment;
 import io.ipfs.videoshare.Fragment.ThreeFragment;
 import io.ipfs.videoshare.Fragment.TwoFragment;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
+import io.ipfs.videoshare.ipfs_util.Util;
+import ipfs.gomobile.android.IPFS;
+import ipfs.gomobile.android.RequestBuilder;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -54,16 +57,13 @@ public class MainActivity extends AppCompatActivity {
     private String hash = "bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m";
     List<String> okurl = new ArrayList<>();
     Button button, update;
-    public String head = App.updata_url_head;
-    public String urlurl = App.updata_url;
-    private String json_all;
     public static MainActivity _main;
 
-    private String[] tabText = {"", "", "", "设置"};
+    private String[] tabText = {"视频", "DitTok", "", "设置"};
     //未选中icon
-    private int[] normalIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
+    private int[] normalIcon = {R.drawable.jiedian, R.drawable.jiedian, R.drawable.white, R.drawable.shezhi};
     //选中时icon
-    private int[] selectIcon = {R.drawable.white, R.drawable.white, R.drawable.white, R.drawable.shezhi};
+    private int[] selectIcon = {R.drawable.jiedian, R.drawable.jiedian, R.drawable.white, R.drawable.shezhi};
 
     private List<Fragment> fragments = new ArrayList<>();
 
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         fragments.add(new FirstFragment());
-        fragments.add(new FirstFragment());
-        fragments.add(new FirstFragment());
+        fragments.add(new TwoFragment());
+        fragments.add(new ThreeFragment());
         fragments.add(new ForeFragment());
 
         navigationBar.titleItems(tabText)
@@ -186,6 +186,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     protected UpdateAppBean parseJson(String json) {
                         App.updata_date = json;
+//                        Util util = new Util();
+//                        try {
+//                            json = util.get_updatejson(MainActivity.this);
+//                        } catch (IPFS.ShellRequestException e) {
+//                            e.printStackTrace();
+//                        } catch (RequestBuilder.RequestBuilderException e) {
+//                            e.printStackTrace();
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
                         UpdateAppBean updateAppBean = new UpdateAppBean();
                         try {
                             JSONObject jsonObject = new JSONObject(json);
@@ -208,14 +218,15 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 updata = "No";
                             }
-
+                            String downurl=App.default_getway;
+                            downurl=downurl.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
                             updateAppBean
                                     //（必须）是否更新Yes,No
                                     .setUpdate(updata)
                                     //（必须）新版本号，
                                     .setNewVersion(upbean.getData().get(postion).getVersion())
                                     //（必须）下载地址
-                                    .setApkFileUrl(head + upbean.getData().get(postion).getApk_file())
+                                    .setApkFileUrl(downurl +"/"+ upbean.getData().get(postion).getApk_file())
                                     //（必须）更新内容
                                     .setUpdateLog(upbean.getData().get(postion).getLog());
                             //大小，不设置不显示大小，可以不设置

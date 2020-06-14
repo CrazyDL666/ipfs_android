@@ -28,6 +28,7 @@ import java.io.InputStream;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import io.ipfs.videoshare.ipfs_util.Util;
 import ipfs.gomobile.android.IPFS;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,7 +43,7 @@ import static android.content.ContentValues.TAG;
  * Created by Administrator on 2020/3/26.
  */
 
-public class erweima extends Activity {
+public class erweima extends Activity{
     @InjectView(R.id.image)
     ImageView image;
     @InjectView(R.id.title)
@@ -80,8 +81,9 @@ public class erweima extends Activity {
             verson2.setText(verson);
             title.setText(name);
         }
-
-        aa= MainActivity._main.head+down_url;
+        String getway=App.default_getway;
+        getway=getway.replace("/ipfs/:hash","/ipns/"+App.updata_hash);
+        aa= getway+"/"+down_url;
         Bitmap mBitmap = CodeUtils.createImage(aa, 400, 400, null);
         image.setImageBitmap(mBitmap);
 
