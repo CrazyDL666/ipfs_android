@@ -1,11 +1,16 @@
 package io.ipfs.videoshare.Fragment;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,7 +20,8 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
-import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
+import cn.jzvd.JZVideoPlayer;
+import cn.jzvd.JZVideoPlayerStandard;
 import io.ipfs.videoshare.App;
 import io.ipfs.videoshare.Bean.demoBean;
 import io.ipfs.videoshare.R;
@@ -35,17 +41,26 @@ import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
  */
 
 public class TwoFragment extends Fragment {
-    JCVideoPlayerStandard jzvdStd;
+    JZVideoPlayerStandard jzvdStd;
+    TextView tishi;
+    demoBean demoVideos;
+    Handler thread;
+    float mPosX,mPosY,mCurPosX,mCurPosY;
     private String inHash="QmeHccaAitY3h6QUyf4VrgKziAdSpwrDuu7ETyxrpax1oZ";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bofangqi, null);
-        jzvdStd = (JCVideoPlayerStandard) view.findViewById(R.id.videoplayer);
-        JCVideoPlayerStandard.releaseAllVideos();
+        View view = inflater.inflate(R.layout.bofangqi0, null);
+        jzvdStd = (JZVideoPlayerStandard) view.findViewById(R.id.videoplayer);
+        tishi=view.findViewById(R.id.tishi);
+        tishi.setText("未连接 ETH, 请下载浏览器插件\uD83E\uDD8AMetaMask，并切换到Ropsten测试网络，访问水龙头以获取测试用的以太币。");
+        jzvdStd.thumbImageView.setImageResource(R.drawable.back);  // 背景图（不会充满屏幕）
+        JZVideoPlayer.setVideoImageDisplayType(JZVideoPlayer.VIDEO_IMAGE_DISPLAY_TYPE_FILL_PARENT);
+        jzvdStd.TOOL_BAR_EXIST = false;
         OkHttpClient client = new OkHttpClient();
         String getway=App.default_getway.replace("/ipfs/:hash","/ipns/"+inHash+"/demo.json");
         Request request = new Request.Builder().url(getway).build();
+
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -61,13 +76,17 @@ public class TwoFragment extends Fragment {
                         @Override
                         public void run() {
                             if (body != null) {
-                                Log.e("zzy",body);
                                 Gson gson = new Gson();
-                                demoBean demoVideos = gson.fromJson(body, demoBean.class);
+                                demoVideos = gson.fromJson(body, demoBean.class);
+
                                 int size = demoVideos.getDemoVideos().size();
                                 int playid = (int)(Math.random()*(size));
                                 String getway=App.default_getway.replace("/ipfs/:hash",demoVideos.getDemoVideos().get(playid).getUrl());
-                                jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, demoVideos.getDemoVideos().get(playid).getTitle());
+                                jzvdStd.setUp(getway, JZVideoPlayerStandard.SCROLL_AXIS_HORIZONTAL, demoVideos.getDemoVideos().get(playid).getTitle());
+                                //jzvdStd.startVideo();
+
+                                thread = new Handler();
+                                thread.post(runnable);
                             }
                         }
                     });
@@ -77,5 +96,28 @@ public class TwoFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (demoVideos.getDemoVideos().size() > 0 && null != jzvdStd) {
+                if (jzvdStd.currentState == JZVideoPlayer.CURRENT_STATE_AUTO_COMPLETE ||
+                        jzvdStd.currentState == JZVideoPlayer.CURRENT_STATE_ERROR) {
+                    int size = demoVideos.getDemoVideos().size();
+                    int playid = (int)(Math.random()*(size));
+                    String getway=App.default_getway.replace("/ipfs/:hash",demoVideos.getDemoVideos().get(playid).getUrl());
+                    jzvdStd.setUp(getway, JZVideoPlayerStandard.SCROLL_AXIS_HORIZONTAL, demoVideos.getDemoVideos().get(playid).getTitle());
+                    jzvdStd.startVideo();
+                }
+            }
+            thread.postDelayed(this, 1000);
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        JZVideoPlayerStandard.releaseAllVideos();
     }
 }

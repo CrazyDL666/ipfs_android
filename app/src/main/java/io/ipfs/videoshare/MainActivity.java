@@ -59,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
     Button button, update;
     public static MainActivity _main;
 
-    private String[] tabText = {"节点", "", "", "设置"};
+    private String[] tabText = {"视频", "DitTok", "", "设置"};
     //未选中icon
-    private int[] normalIcon = {R.drawable.jiedian, R.drawable.white, R.drawable.white, R.drawable.shezhi};
+    private int[] normalIcon = {R.drawable.jiedian, R.drawable.jiedian, R.drawable.white, R.drawable.shezhi};
     //选中时icon
-    private int[] selectIcon = {R.drawable.jiedian, R.drawable.white, R.drawable.white, R.drawable.shezhi};
+    private int[] selectIcon = {R.drawable.jiedian, R.drawable.jiedian, R.drawable.white, R.drawable.shezhi};
 
     private List<Fragment> fragments = new ArrayList<>();
 
