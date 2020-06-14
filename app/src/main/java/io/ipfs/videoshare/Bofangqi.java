@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import io.ipfs.videoshare.bean.VideoBean;
+import io.ipfs.videoshare.ipfs_util.Util;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -43,51 +44,27 @@ public class Bofangqi extends AppCompatActivity {
 
         hash = getIntent().getStringExtra("url");
 
-        String getway=App.default_getway.replace("/ipfs/:hash",hash+"/files.json");
-        getAsyn(getway);
+        Util util = new Util();
+//        String ipfs = util.resolve_by_gateway(hash, App.default_getway);
 
-    }
-    public void getAsyn(String url) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(url).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
+        String result = util.get_content_by_gateway(hash+"/files.json", App.default_getway).trim();
+
+        Gson gson=new Gson();
+        VideoBean bean = gson.fromJson(result, VideoBean.class);
+        text.setText(bean.getDescription());
+        if(bean.getFiles().size()>0){
+            String getway=App.default_getway.replace("/ipfs/:hash",bean.getFiles().get(0).getUrl());
+            jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, bean.getFiles().get(0).getTitle());
+        }
+        adpter = new video_adpter(Bofangqi.this, bean, new video_adpter.OnWtglItemListener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    final String result = response.body().string().trim();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Gson gson=new Gson();
-                            VideoBean bean = gson.fromJson(result, VideoBean.class);
-                            text.setText(bean.getDescription());
-                            if(bean.getFiles().size()>0){
-                                String getway=App.default_getway.replace("/ipfs/:hash",bean.getFiles().get(0).getUrl());
-                                jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, bean.getFiles().get(0).getTitle());
-                            }
-                            adpter = new video_adpter(Bofangqi.this, bean, new video_adpter.OnWtglItemListener() {
-                                @Override
-                                public void OnWtglItemCliek(String down_url,String title) {
-                                    String getway=App.default_getway.replace("/ipfs/:hash",down_url);
-                                    jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, title);
-                                }
-                            });
-                            list.setAdapter(adpter);
-
-
-
-                        }
-                    });
-
-                }
+            public void OnWtglItemCliek(String down_url,String title) {
+                String getway=App.default_getway.replace("/ipfs/:hash",down_url);
+                jzvdStd.setUp(getway, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, title);
             }
         });
+        list.setAdapter(adpter);
+
     }
 
 

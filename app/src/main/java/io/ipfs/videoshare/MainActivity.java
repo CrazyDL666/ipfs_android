@@ -40,6 +40,9 @@ import io.ipfs.videoshare.Fragment.ForeFragment;
 import io.ipfs.videoshare.Fragment.ThreeFragment;
 import io.ipfs.videoshare.Fragment.TwoFragment;
 import io.ipfs.videoshare.Updata.OkGoUpdateHttpUtil;
+import io.ipfs.videoshare.ipfs_util.Util;
+import ipfs.gomobile.android.IPFS;
+import ipfs.gomobile.android.RequestBuilder;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -183,6 +186,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     protected UpdateAppBean parseJson(String json) {
                         App.updata_date = json;
+//                        Util util = new Util();
+//                        try {
+//                            json = util.get_updatejson(MainActivity.this);
+//                        } catch (IPFS.ShellRequestException e) {
+//                            e.printStackTrace();
+//                        } catch (RequestBuilder.RequestBuilderException e) {
+//                            e.printStackTrace();
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
                         UpdateAppBean updateAppBean = new UpdateAppBean();
                         try {
                             JSONObject jsonObject = new JSONObject(json);
